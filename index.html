@@ -2,123 +2,94 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Tiempos de Concentración</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background-color: #f8f9fa;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-      background-color: #fff;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: #f1f1f1;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 5px; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    .result { font-weight: bold; background-color: #eef; }
   </style>
 </head>
 <body>
-  <h1>Calculadora de Tiempos de Concentración</h1>
-  <form id="formulario">
-    <label for="l">Longitud del cauce (L) [km]:</label>
-    <input type="number" id="l" step="0.01" min="0" required>
+  <h1>Calculadora de Tiempo de Concentración</h1>
 
-    <label for="s">Pendiente media del cauce (S) [m/m]:</label>
-    <input type="number" id="s" step="0.0001" min="0" required>
+  <label>Longitud del cauce (m): <input type="number" id="longitud" step="any"></label>
+  <label>Cota inicial (m): <input type="number" id="cota_inicial" step="any"></label>
+  <label>Cota final (m): <input type="number" id="cota_final" step="any"></label>
+  <label>Área de la cuenca (ha): <input type="number" id="area" step="any"></label>
+  <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
+  <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
+  <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
+  <label>Intensidad de lluvia (mm/h): <input type="number" id="intensidad" step="any"></label>
 
-    <label for="a">Área de la cuenca (A) [km²]:</label>
-    <input type="number" id="a" step="0.01" min="0" required>
-
-    <button type="button" onclick="calcular()">Calcular</button>
-  </form>
+  <button onclick="calcularTc()">Calcular</button>
 
   <table>
     <thead>
       <tr>
         <th>Método</th>
-        <th>Tiempo (min)</th>
+        <th>Tiempo de concentración (min)</th>
       </tr>
     </thead>
-    <tbody id="resultados">
-      <tr><td>Kirpich</td><td id="kirpich">0</td></tr>
-      <tr><td>Giandotti</td><td id="giandotti">0</td></tr>
-      <tr><td>Passini</td><td id="passini">0</td></tr>
-      <tr><td>T. Promedio sin extremos</td><td id="promedio">0</td></tr>
+    <tbody id="tablaResultados">
+      <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
+      <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
+      <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
+      <tr><td>Onda cinemática</td><td class="result" id="onda">0</td></tr>
+      <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
+      <tr><td>FAA</td><td class="result" id="faa">0</td></tr>
+      <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
     </tbody>
   </table>
 
-  <script>
-    function calcular() {
-      const L = parseFloat(document.getElementById('l').value);
-      const S = parseFloat(document.getElementById('s').value);
-      const A = parseFloat(document.getElementById('a').value);
+<script>
+function calcularTc() {
+  let L = parseFloat(document.getElementById("longitud").value);
+  let Hi = parseFloat(document.getElementById("cota_inicial").value);
+  let Hf = parseFloat(document.getElementById("cota_final").value);
+  let A = parseFloat(document.getElementById("area").value);
+  let CN = parseFloat(document.getElementById("cn").value);
+  let n = parseFloat(document.getElementById("manning").value);
+  let C = parseFloat(document.getElementById("coeficiente").value);
+  let I = parseFloat(document.getElementById("intensidad").value);
 
-      if (isNaN(L) || isNaN(S) || isNaN(A) || S <= 0 || L <= 0 || A <= 0) {
-        alert("Por favor, ingrese valores válidos y mayores a cero en todos los campos.");
-        return;
-      }
+  let S = (Hi - Hf) / L;
+  let resultados = [];
 
-      // Métodos de cálculo
-      const tKirpich = 0.0195 * Math.pow(L * 1000, 0.77) * Math.pow(S, -0.385) / 60;
-      const tGiandotti = (4 * Math.sqrt(A) + 1.5 * L) / (0.8 * Math.sqrt(S)) * 60;
-      const tPassini = 1.67 * Math.pow(L, 0.467) / Math.pow(S, 0.235);
+  let kirpich = 0.0195 * Math.pow(L, 0.77) * Math.pow(S, -0.385);
+  resultados.push(kirpich);
+  document.getElementById("kirpich").textContent = kirpich.toFixed(2);
 
-      const resultados = [tKirpich, tGiandotti, tPassini];
-      const promedio = promedioSinExtremos(resultados);
+  let scs = (Math.pow(L, 0.8) * Math.pow((1000 / CN - 10), 0.7)) / (1900 * Math.pow(S, 0.5));
+  resultados.push(scs);
+  document.getElementById("scs").textContent = scs.toFixed(2);
 
-      document.getElementById("kirpich").innerText = tKirpich.toFixed(2);
-      document.getElementById("giandotti").innerText = tGiandotti.toFixed(2);
-      document.getElementById("passini").innerText = tPassini.toFixed(2);
-      document.getElementById("promedio").innerText = promedio.toFixed(2);
-    }
+  let temez = 0.3 * (L / Math.sqrt(Hi - Hf));
+  resultados.push(temez);
+  document.getElementById("temez").textContent = temez.toFixed(2);
 
-    function promedioSinExtremos(arr) {
-      const copia = [...arr].sort((a, b) => a - b);
-      if (copia.length > 2) {
-        copia.shift(); // eliminar menor
-        copia.pop();   // eliminar mayor
-      }
-      const suma = copia.reduce((a, b) => a + b, 0);
-      return suma / copia.length;
-    }
-  </script>
+  let onda = 6.9 * Math.pow((n * L / (Math.sqrt(S) * Math.pow(A, 0.1))), 0.6);
+  resultados.push(onda);
+  document.getElementById("onda").textContent = onda.toFixed(2);
+
+  let california = 0.94 * Math.pow((L * L / A), 0.33);
+  resultados.push(california);
+  document.getElementById("california").textContent = california.toFixed(2);
+
+  let faa = 1.8 * Math.pow((1.1 - C), -0.5) * Math.pow((L / Math.sqrt(Hi - Hf)), 0.5);
+  resultados.push(faa);
+  document.getElementById("faa").textContent = faa.toFixed(2);
+
+  // Promedio sin extremos
+  let ordenados = resultados.slice().sort((a, b) => a - b);
+  let promedio = ordenados.slice(1, -1).reduce((a, b) => a + b, 0) / 4;
+  document.getElementById("promedio").textContent = promedio.toFixed(2);
+}
+</script>
+
 </body>
 </html>
