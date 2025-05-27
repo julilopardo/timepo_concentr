@@ -63,7 +63,7 @@ function calcularTc() {
   resultados.push(kirpich);
   document.getElementById("kirpich").textContent = kirpich.toFixed(2);
 
-  let scs = (Math.pow(L, 0.8) *100* Math.pow((1000 / CN - 9), 0.7)) / (1900* Math.pow((S*100), 0.5));
+  let scs = (Math.pow(L*3.28084, 0.8) *100* Math.pow((1000 / CN )- 9, 0.7)) / (1900* Math.pow((S*100), 0.5));
   resultados.push(scs);
   document.getElementById("scs").textContent = scs.toFixed(2);
 
@@ -75,7 +75,7 @@ function calcularTc() {
  // resultados.push(onda);
   //document.getElementById("onda").textContent = onda.toFixed(2);
 
-  let california = 60 *Math.pow((0.87075* Math.pow(L, 3)/(Hf-Hi)),0.385);
+  let california = 60 * Math.pow((0.87075* Math.pow(L/1000, 3)/(Hf-Hi)),0.385);
   resultados.push(california);
   document.getElementById("california").textContent = california.toFixed(2);
 
