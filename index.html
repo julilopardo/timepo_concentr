@@ -67,7 +67,7 @@ function calcularTc() {
   resultados.push(scs);
   document.getElementById("scs").textContent = scs.toFixed(2);
 
-  let temez = 60 * 0.3 * ((L/1000) / Math.pow(Math.pow(S, 0.25),0.76));
+  let temez = 60 * 0.3 * (Math.pow((L/1000) / Math.pow(S, 0.25),0.76));
   resultados.push(temez);
   document.getElementById("temez").textContent = temez.toFixed(2);
 
@@ -75,7 +75,7 @@ function calcularTc() {
  // resultados.push(onda);
   //document.getElementById("onda").textContent = onda.toFixed(2);
 
-  let california = 60 *Math.pow((11.9* Math.pow(L, 3)/(Hf-Hi)),0.385);
+  let california = 60 *Math.pow((0.87075* Math.pow(L, 3)/(Hf-Hi)),0.385);
   resultados.push(california);
   document.getElementById("california").textContent = california.toFixed(2);
 
