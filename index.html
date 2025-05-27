@@ -39,9 +39,8 @@
       <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
       <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
       <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
-      <tr><td>Onda cinemática</td><td class="result" id="onda">0</td></tr>
       <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
-      <tr><td>FAA</td><td class="result" id="faa">0</td></tr>
+      <tr><td>Federal Aviation Administration</td><td class="result" id="faa">0</td></tr>
       <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
     </tbody>
   </table>
@@ -64,23 +63,23 @@ function calcularTc() {
   resultados.push(kirpich);
   document.getElementById("kirpich").textContent = kirpich.toFixed(2);
 
-  let scs = (Math.pow(L, 0.8) * Math.pow((1000 / CN - 10), 0.7)) / (1900 * Math.pow(S, 0.5));
+  let scs = (Math.pow(L, 0.8) * Math.pow((1000 / CN - 9), 0.7))*100 / (1900* Math.pow((S*100), 0.5));
   resultados.push(scs);
   document.getElementById("scs").textContent = scs.toFixed(2);
 
-  let temez = 0.3 * (L / Math.sqrt(Hi - Hf));
+  let temez = 60 * 0.3 * ((L/1000) / Math.pow(Math.pow(S, 0.25),0.76);
   resultados.push(temez);
   document.getElementById("temez").textContent = temez.toFixed(2);
 
-  let onda = 6.9 * Math.pow((n * L / (Math.sqrt(S) * Math.pow(A, 0.1))), 0.6);
-  resultados.push(onda);
-  document.getElementById("onda").textContent = onda.toFixed(2);
+  //let onda = 6.9 * Math.pow((n * L / (Math.sqrt(S) * Math.pow(A, 0.1))), 0.6);
+ // resultados.push(onda);
+  //document.getElementById("onda").textContent = onda.toFixed(2);
 
   let california = 0.94 * Math.pow((L * L / A), 0.33);
   resultados.push(california);
   document.getElementById("california").textContent = california.toFixed(2);
 
-  let faa = 1.8 * Math.pow((1.1 - C), -0.5) * Math.pow((L / Math.sqrt(Hi - Hf)), 0.5);
+  let faa = 1.8 * (1.1 - C)* Math.pow(L*3.28, 0.5) * Math.pow((S*100), -0.3333);
   resultados.push(faa);
   document.getElementById("faa").textContent = faa.toFixed(2);
 
