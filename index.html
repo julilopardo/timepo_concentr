@@ -24,7 +24,7 @@
   <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
   <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
   <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
-  <label>Intensidad de lluvia (mm/h): <input type="number" id="intensidad" step="any"></label>
+  
 
   <button onclick="calcularTc()">Calcular</button>
 
@@ -54,7 +54,7 @@ function calcularTc() {
   let CN = parseFloat(document.getElementById("cn").value);
   let n = parseFloat(document.getElementById("manning").value);
   let C = parseFloat(document.getElementById("coeficiente").value);
-  let I = parseFloat(document.getElementById("intensidad").value);
+  //let I = parseFloat(document.getElementById("intensidad").value);
 
   let S = (Hi - Hf) / L;
   let resultados = [];
@@ -63,7 +63,7 @@ function calcularTc() {
   resultados.push(kirpich);
   document.getElementById("kirpich").textContent = kirpich.toFixed(2);
 
-  let scs = (Math.pow(L, 0.8) * Math.pow((1000 / CN - 9), 0.7))*100 / (1900* Math.pow((S*100), 0.5));
+  let scs = (Math.pow(L, 0.8) *100* Math.pow((1000 / CN - 9), 0.7)) / (1900* Math.pow((S*100), 0.5));
   resultados.push(scs);
   document.getElementById("scs").textContent = scs.toFixed(2);
 
@@ -75,7 +75,7 @@ function calcularTc() {
  // resultados.push(onda);
   //document.getElementById("onda").textContent = onda.toFixed(2);
 
-  let california = 0.94 * Math.pow((L * L / A), 0.33);
+  let california = 60 *Math.pow((11.9* Math.pow(L, 3)/(Hf-Hi)),0.385);
   resultados.push(california);
   document.getElementById("california").textContent = california.toFixed(2);
 
