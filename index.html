@@ -75,7 +75,7 @@ function calcularTc() {
  // resultados.push(onda);
   //document.getElementById("onda").textContent = onda.toFixed(2);
 
-  let california = 60 * Math.pow((0.87075* (Math.pow((L/1000), 3))/(Hf-Hi)),0.385);
+  let california = 60 * Math.pow((0.87075* (Math.pow((L/1000), 3))/(Hi-Hf)),0.385);
   resultados.push(california);
   document.getElementById("california").textContent = california.toFixed(2);
 
