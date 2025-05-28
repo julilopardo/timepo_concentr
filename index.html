@@ -1,176 +1,158 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Tiempos de Concentración</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Albert+Sans&display=swap');
 
-  <!-- Fuente Albert Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans&display=swap" rel="stylesheet">
+  body {
+    font-family: 'Albert Sans', sans-serif;
+    background-color: #f5f9fc;
+    color: #333;
+  }
 
-  <style>
-    body {
-      font-family: 'Albert Sans', sans-serif;
-      background-color: #f5f9fc;
-      color: #333;
-      padding: 20px;
-    }
+  .contenedor-form-tabla {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 30px;
+  }
 
-    h1 {
-      color: #2a4e72;
-      text-align: center;
-    }
+  .formulario, .tabla {
+    flex: 1 1 45%;
+    min-width: 300px;
+  }
 
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-top: 30px;
-    }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #2a4e72;
+  }
 
-    .formulario, .tabla {
-      flex: 1 1 45%;
-      min-width: 300px;
-    }
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #2a4e72;
-    }
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #2a4e72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+  button:hover {
+    background-color: #1b354e;
+  }
 
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #2a4e72;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      cursor: pointer;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+  }
 
-    button:hover {
-      background-color: #1b354e;
-    }
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #d6e4f2;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 14px;
-    }
+  th {
+    background-color: #e1effa;
+    color: #1f3f5b;
+  }
 
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #d6e4f2;
-    }
+  td.result {
+    background-color: #f0f7fb;
+    font-weight: bold;
+    color: #2a4e72;
+  }
 
-    th {
-      background-color: #e1effa;
-      color: #1f3f5b;
-    }
+  tr:last-child td {
+    background-color: #d6ecff;
+    font-weight: bold;
+  }
+</style>
 
-    td.result {
-      background-color: #f0f7fb;
-      font-weight: bold;
-      color: #2a4e72;
-    }
+<h2>Calculadora de Tiempo de Concentración</h2>
 
-    tr:last-child td {
-      background-color: #d6ecff;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>Calculadora de Tiempo de Concentración</h1>
-
-  <div class="container">
-    <div class="formulario">
-      <label>Longitud del cauce (m): <input type="number" id="longitud" step="any"></label>
-      <label>Cota inicial (m): <input type="number" id="cota_inicial" step="any"></label>
-      <label>Cota final (m): <input type="number" id="cota_final" step="any"></label>
-      <label>Área de la cuenca (ha): <input type="number" id="area" step="any"></label>
-      <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
-      <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
-      <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
-      <button onclick="calcularTc()">Calcular</button>
-    </div>
-
-    <div class="tabla">
-      <table>
-        <thead>
-          <tr>
-            <th>Método</th>
-            <th>Tiempo de concentración (min)</th>
-          </tr>
-        </thead>
-        <tbody id="tablaResultados">
-          <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
-          <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
-          <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
-          <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
-          <tr><td>Federal Aviation Administration</td><td class="result" id="faa">0</td></tr>
-          <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
-        </tbody>
-      </table>
-    </div>
+<div class="contenedor-form-tabla">
+  <div class="formulario">
+    <label>Longitud del cauce (m): <input type="number" id="longitud" step="any"></label>
+    <label>Cota inicial (m): <input type="number" id="cota_inicial" step="any"></label>
+    <label>Cota final (m): <input type="number" id="cota_final" step="any"></label>
+    <label>Área de la cuenca (ha): <input type="number" id="area" step="any"></label>
+    <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
+    <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
+    <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
+    <button onclick="calcularTc()">Calcular</button>
   </div>
 
+  <div class="tabla">
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Tiempo de concentración (min)</th>
+        </tr>
+      </thead>
+      <tbody id="tablaResultados">
+        <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
+        <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
+        <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
+        <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
+        <tr><td>Federal Aviation Administration</td><td class="result" id="faa">0</td></tr>
+        <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <script>
-function calcularTc() {
-  let L = parseFloat(document.getElementById("longitud").value);
-  let Hi = parseFloat(document.getElementById("cota_inicial").value);
-  let Hf = parseFloat(document.getElementById("cota_final").value);
-  let A = parseFloat(document.getElementById("area").value);
-  let CN = parseFloat(document.getElementById("cn").value);
-  let n = parseFloat(document.getElementById("manning").value);
-  let C = parseFloat(document.getElementById("coeficiente").value);
+  function calcularTc() {
+    let L = parseFloat(document.getElementById("longitud").value);
+    let Hi = parseFloat(document.getElementById("cota_inicial").value);
+    let Hf = parseFloat(document.getElementById("cota_final").value);
+    let A = parseFloat(document.getElementById("area").value);
+    let CN = parseFloat(document.getElementById("cn").value);
+    let n = parseFloat(document.getElementById("manning").value);
+    let C = parseFloat(document.getElementById("coeficiente").value);
 
-  let S = (Hi - Hf) / L;
-  let resultados = [];
+    let S = (Hi - Hf) / L;
+    let resultados = [];
 
-  let kirpich = 0.0195 * Math.pow(L, 0.77) * Math.pow(S, -0.385);
-  resultados.push(kirpich);
-  document.getElementById("kirpich").textContent = kirpich.toFixed(2);
+    let kirpich = 0.0195 * Math.pow(L, 0.77) * Math.pow(S, -0.385);
+    resultados.push(kirpich);
+    document.getElementById("kirpich").textContent = kirpich.toFixed(2);
 
-  let scs = (Math.pow((L * 3.28084), 0.8) * 100 * Math.pow((1000 / CN) - 9, 0.7)) / (1900 * Math.pow((S * 100), 0.5));
-  resultados.push(scs);
-  document.getElementById("scs").textContent = scs.toFixed(2);
+    let scs = (Math.pow((L * 3.28084), 0.8) * 100 * Math.pow((1000 / CN) - 9, 0.7)) / (1900 * Math.pow((S * 100), 0.5));
+    resultados.push(scs);
+    document.getElementById("scs").textContent = scs.toFixed(2);
 
-  let temez = 60 * 0.3 * (Math.pow((L / 1000) / Math.pow(S, 0.25), 0.76));
-  resultados.push(temez);
-  document.getElementById("temez").textContent = temez.toFixed(2);
+    let temez = 60 * 0.3 * (Math.pow((L / 1000) / Math.pow(S, 0.25), 0.76));
+    resultados.push(temez);
+    document.getElementById("temez").textContent = temez.toFixed(2);
 
-  let california = 60 * Math.pow((0.87075 * (Math.pow((L / 1000), 3)) / (Hi - Hf)), 0.385);
-  resultados.push(california);
-  document.getElementById("california").textContent = california.toFixed(2);
+    let california = 60 * Math.pow((0.87075 * Math.pow((L / 1000), 3)) / (Hi - Hf), 0.385);
+    resultados.push(california);
+    document.getElementById("california").textContent = california.toFixed(2);
 
-  let faa = 1.8 * (1.1 - C) * Math.pow(L * 3.28, 0.5) * Math.pow((S * 100), -0.3333);
-  resultados.push(faa);
-  document.getElementById("faa").textContent = faa.toFixed(2);
+    let faa = 1.8 * (1.1 - C) * Math.pow(L * 3.28, 0.5) * Math.pow((S * 100), -0.3333);
+    resultados.push(faa);
+    document.getElementById("faa").textContent = faa.toFixed(2);
 
-  let ordenados = resultados.slice().sort((a, b) => a - b);
-  let promedio = ordenados.slice(1, -1).reduce((a, b) => a + b, 0) / 4;
-  document.getElementById("promedio").textContent = promedio.toFixed(2);
-}
+    // Promedio sin extremos
+    let ordenados = resultados.slice().sort((a, b) => a - b);
+    let promedio = ordenados.slice(1, -1).reduce((a, b) => a + b, 0) / 4;
+    document.getElementById("promedio").textContent = promedio.toFixed(2);
+  }
 </script>
-
-</body>
-</html>
