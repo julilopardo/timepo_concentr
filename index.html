@@ -5,6 +5,20 @@
     font-family: 'Albert Sans', sans-serif;
     background-color: #f5f9fc;
     color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contenedor-central {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px 20px;
+  }
+
+  h2 {
+    text-align: center;
+    color: #2a4e72;
+    margin-bottom: 30px;
   }
 
   .contenedor-form-tabla {
@@ -13,7 +27,6 @@
     gap: 40px;
     justify-content: space-between;
     align-items: flex-start;
-    margin-top: 30px;
   }
 
   .formulario, .tabla {
@@ -81,42 +94,49 @@
     background-color: #d6ecff;
     font-weight: bold;
   }
+
+  @media (max-width: 768px) {
+    .contenedor-form-tabla {
+      flex-direction: column;
+    }
+  }
 </style>
 
-<h2>Calculadora de Tiempo de Concentración</h2>
+<div class="contenedor-central">
+  <h2>Calculadora de Tiempo de Concentración</h2>
 
-<div class="contenedor-form-tabla">
-  <div class="formulario">
-    <label>Longitud del cauce (m): <input type="number" id="longitud" step="any"></label>
-    <label>Cota inicial (m): <input type="number" id="cota_inicial" step="any"></label>
-    <label>Cota final (m): <input type="number" id="cota_final" step="any"></label>
-    <label>Área de la cuenca (ha): <input type="number" id="area" step="any"></label>
-    <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
-    <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
-    <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
-    <button onclick="calcularTc()">Calcular</button>
-  </div>
-
-  <div class="tabla">
-    <table>
-      <thead>
-        <tr>
-          <th>Método</th>
-          <th>Tiempo de concentración (min)</th>
-        </tr>
-      </thead>
-      <tbody id="tablaResultados">
-        <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
-        <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
-        <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
-        <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
-        <tr><td>Federal Aviation Administration</td><td class="result" id="faa">0</td></tr>
-        <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="contenedor-form-tabla">
+    <div class="formulario">
+      <label>Longitud del cauce (m): <input type="number" id="longitud" step="any"></label>
+      <label>Cota inicial (m): <input type="number" id="cota_inicial" step="any"></label>
+      <label>Cota final (m): <input type="number" id="cota_final" step="any"></label>
+      <label>Área de la cuenca (ha): <input type="number" id="area" step="any"></label>
+      <label>Número de curva SCS: <input type="number" id="cn" step="any"></label>
+      <label>Rugosidad de Manning (n): <input type="number" id="manning" step="any"></label>
+      <label>Coeficiente de escorrentía (C): <input type="number" id="coeficiente" step="any"></label>
+      <button onclick="calcularTc()">Calcular</button>
     </div>
+
+    <div class="tabla">
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Tiempo de concentración (min)</th>
+          </tr>
+        </thead>
+        <tbody id="tablaResultados">
+          <tr><td>Kirpich</td><td class="result" id="kirpich">0</td></tr>
+          <tr><td>SCS</td><td class="result" id="scs">0</td></tr>
+          <tr><td>Témez</td><td class="result" id="temez">0</td></tr>
+          <tr><td>California Culvert</td><td class="result" id="california">0</td></tr>
+          <tr><td>Federal Aviation Administration</td><td class="result" id="faa">0</td></tr>
+          <tr><td><strong>Promedio sin extremos</strong></td><td class="result" id="promedio">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
   <div style="margin-top: 20px; text-align: center;">
     <tr><td><strong>Ayúdanos a seguir creando contenido, ¡invitanos un café!</strong></td><td></td>
     <a href='https://cafecito.app/drophidraulica' rel='noopener' target='_blank'>
@@ -128,7 +148,6 @@
       />
     </a>
   </div>
-  
 </div>
 
 <script>
@@ -164,9 +183,10 @@
     resultados.push(faa);
     document.getElementById("faa").textContent = faa.toFixed(2);
 
-    // Promedio sin extremos
     let ordenados = resultados.slice().sort((a, b) => a - b);
     let promedio = ordenados.slice(1, -1).reduce((a, b) => a + b, 0) / 4;
     document.getElementById("promedio").textContent = promedio.toFixed(2);
   }
 </script>
+
+
